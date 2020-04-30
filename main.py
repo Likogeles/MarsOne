@@ -1,7 +1,12 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from flask_login import LoginManager, login_user
 
-from data import db_session, jobs, users, loginform
+from data import db_session, jobs, users, loginform, registerform
+
+
+# email и пароль для входа:
+# scott_chief@mars.org
+# 123
 
 
 app = Flask(__name__)
@@ -40,6 +45,38 @@ def main():
     session.add(job)
     session.add(user1)
     session.commit()
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = registerform.RegisterForm()
+    db_session.global_init("db/marsians.sqlite")
+    session = db_session.create_session()
+
+    if form.validate_on_submit():
+        if not form.age.data.isdigit():
+            return render_template('register.html',
+                                   agemassage="Неправильно введён возраст",
+                                   form=form)
+        if not form.password1.data == form.password2.data:
+            return render_template('register.html',
+                                   passwordmassage="Пароли не совпадают",
+                                   form=form)
+        user1 = users.User()
+        user1.name = form.name.data
+        user1.surname = form.surname.data
+        user1.age = int(form.age.data)
+        user1.position = form.position.data
+        user1.speciality = form.speciality.data
+        user1.address = form.address.data
+        user1.email = form.email.data
+        user1.hashed_password = form.password1.data
+
+        session.add(user1)
+        session.commit()
+
+        return redirect("/login")
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])

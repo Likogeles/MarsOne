@@ -22,7 +22,11 @@
               <td>{{ item.team_leader }}</td>
               <td>{{ item.work_size }}</td>
               <td>{{ item.collaborators }}</td>
-              <td bgcolor="#FFE475">{{ item.is_finished }}</td>
+                {% if item.is_finished %}
+              <td bgcolor="#FFE475">Is finished</td>
+                {% else %}
+              <td bgcolor="#FFE475">Is not finished</td>
+                {% endif %}
             </tr>
           </tbody>
         </table>

@@ -6,6 +6,9 @@
     <meta charset="UTF-8">
     <title>Авторизация</title>
 </head>
+{% if name %}
+    <h3>Вы вошли как {{name}}</h3>
+{% endif %}
 <h1>Авторизация</h1>
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
